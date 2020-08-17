@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="us">
+	<head>
+		<meta charset="utf-8">
+		<title>Code Player</title>
+		<script src="jquery-3.5.1.min.js"></script>
+		<script src="jquery-ui/jquery-ui.js"></script>
+		<link href="jquery-ui/jquery-ui.css" rel="stylesheet">
+		
+	<style type="text/css">
+		
+		body{
+			padding:0;
+			margin:0 auto;
+			font-family:sans-serif;
+			background-color:black;
+		}
+		
+		#header{
+			width:100%;
+			height:40px;
+			background-color:black;
+		}
+		
+		#buttonsContainer{
+			width:270px;
+			margin:0 auto;
+			padding:5px;
+		}
+		
+		.toggleButtons{
+			float:left;
+			border: 1px solid grey;
+			border-right:none;
+			padding:5px;
+			color:white;
+		}
+		
+		#logo{
+			font-weight:bold;
+			float:left;
+			font-size:22px;
+			padding:5px 0px 5px 10px;
+			color:red;
+			
+		}
+		
+		#Html{
+			border-top-left-radius:5px;
+			border-bottom-left-radius:5px;
+		}
+		
+		#Output{
+			border-top-right-radius:5px;
+			border-bottom-right-radius:5px;
+			border-right:1px solid grey;
+		}
+		
+		.active{
+			background-color:green;
+		}
+		
+		.highlightedButton{
+			background-color:red;
+		}
+		
+		.Panel{
+			width:50%;
+			resize:none;
+			background-color:white;
+			border:none;
+			
+		}
+		
+		.hidden{
+			display:none;
+		}
+		
+	</style>
+	
+	<body>
+	
+		<div id="header">
+			<div id="logo">Code Player</div>
+			
+			<div id="buttonsContainer">
+				<div id="Html" class="toggleButtons active">Html</div>
+				<div id="Css" class="toggleButtons">Css</div>
+				<div id="Javascript" class="toggleButtons">Javascript</div>
+				<div id="Output" class="toggleButtons active">Output</div>
+			</div>
+		</div> 
+	
+		<div id="bodyContainer">
+			<textarea id="HtmlPanel" class="Panel">Hello World!</textarea>
+			<textarea id="CssPanel" class="Panel hidden">p { color: green; }</textarea>
+			<textarea id="JavascriptPanel" class="Panel hidden"></textarea>
+			<iframe id="OutputPanel" class="Panel" ></iframe>
+		</div>
+	
+		<script type= "text/javascript">
+		
+			function updateOutput() {
+                
+                $("iframe").contents().find("Html").html("<html><head><style type='text/css'>" + $("#CssPanel").val() + "</style></head><body>" + $("#HtmlPanel").val() + "</body></html>");
+                
+                document.getElementById("OutputPanel").contentWindow.eval($("#JavascriptPanel").val());
+			}
+			
+			$(".toggleButtons").hover(
+				function(){
+					$(this).addClass("highlightedButton");
+				},
+				function(){
+					$(this).removeClass("highlightedButton");
+				}
+			);
+			
+			$(".toggleButtons").click(
+				function(){
+					var PanelId = $(this).attr("id")+"Panel";
+					$("#"+PanelId).toggleClass("hidden");
+					var noOfActivePanels = 4 - $(".hidden").length;
+					$(".Panel").width(($(window).width()/noOfActivePanels)-10);
+					$(this).toggleClass("active");
+					$(this).removeClass("highlightedButton");
+				}
+			);
+			
+			$(".Panel").height($(window).height()-$("#header").height()-10);
+			$(".Panel").width(($(window).width()/2)-10);
+			
+			updateOutput();
+            
+            $("textarea").on('change keyup paste', function() {
+    
+                updateOutput();
+				
+            });
+			
+			var frame = document.getElementById('OutputPanel');
+			frame.onload = function () {
+				var body = frame.contentWindow.document.querySelector('body');
+				body.style.color = "white";
+			};
+		</script>
+	
+	</body>
+</html>
